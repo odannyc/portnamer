@@ -4,7 +4,7 @@
   "description": "Checks on common network ports such as 80 for HTTP or 22 for SSH.",
   "main": "src/portnamer.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/portnamer.js"
   },
   "author": "Danny Carrillo <odannycx@gmail.com>",
   "license": "MIT",
