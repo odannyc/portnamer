@@ -2,12 +2,15 @@ var Botkit = require('botkit');
 var Ports = require('./ports');
 var Quiz = require('./quiz');
 
+// load the .env file
+require('dotenv').config()
+
 var controller = Botkit.slackbot({
     debug: false,
 });
 
 var bot = controller.spawn({
-    token: process.env.token
+    token: process.env.TOKEN
 }).startRTM();
 
 // Hello

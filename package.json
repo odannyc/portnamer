@@ -9,6 +9,7 @@
   "author": "Danny Carrillo <odannycx@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "botkit": "^0.4.7"
+    "botkit": "^0.4.7",
+    "dotenv": "^2.0.0"
   }
 }
