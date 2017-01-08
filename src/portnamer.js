@@ -3,7 +3,7 @@ var Ports = require('./ports');
 var Quiz = require('./quiz');
 
 // load the .env file
-require('dotenv').config()
+require('dotenv').config({silent: true});
 
 var controller = Botkit.slackbot({
     debug: false,
