@@ -7,7 +7,8 @@ To install you'll need to:
 1. `git clone` this repository.
 2. `cp .env.example .env`
 3. Enter your bot token you got from Slack and enter it in the .env file
-4. Run `npm start`
+4. Run `npm install`
+5. Finally, `npm start`
 
 ## Usage
 You can either mention `@portnamer` in a channel after you invite it, or DM it directly. Start by saying either `hi` or `help`.
