@@ -10,6 +10,15 @@ To install you'll need to:
 4. Run `npm install`
 5. Finally, `npm start`
 
+## Deploying
+We recommend deploying with [now](now.sh). Go to https://my.slack.com/services/new/bot and get a Bot API key. You can also name portnamer. Copy that to your clipboard. Then deploy with one command!
+
+```sh
+now -e TOKEN=[your slack token]
+```
+
+This will give you a url. You now have a Slackbot living in the cloud!
+
 ## Usage
 You can either mention `@portnamer` in a channel after you invite it, or DM it directly. Start by saying either `hi` or `help`.
 
