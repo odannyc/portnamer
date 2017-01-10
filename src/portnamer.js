@@ -1,3 +1,4 @@
+const os = require('os');
 const Botkit = require('botkit');
 const Ports = require('./ports');
 const Quiz = require('./quiz');
@@ -14,6 +15,30 @@ const controller = Botkit.slackbot({ debug });
 const bot = controller.spawn({
   token: process.env.SLACK_TOKEN
 }).startRTM();
+
+const quizHandler = (quiz, convo) => {
+  return [
+    {
+      pattern: 'quit',
+      callback: (response, convo) => {
+        convo.say('Okay, thanks for playing!');
+        convo.next();}
+    },
+    {
+      default: true,
+      callback: (response, convo) => {
+        if (quiz.check(response.text)) {
+          convo.say('You\'re *right*!');
+        } else {
+          convo.say('Sorry.. you got it *wrong*... The actual answer is `' + quiz.answer() + '`');
+        }
+        quiz = new Quiz();
+        convo.ask(quiz.question(), quizHandler(quiz, convo));
+        convo.next();
+      }
+    }
+  ]
+};
 
 // Hello
 controller.hears(constants.greetings, 'direct_message,direct_mention,mention', function(bot, message) {
@@ -76,17 +101,21 @@ controller.hears(['random', 'fun fact'], 'direct_message,direct_mention,mention'
 controller.hears(['quiz me', 'game'], 'direct_message,direct_mention,mention', function(bot, message) {
   bot.startConversation(message, function(err, convo) {
     if (!err) {
-      convo.say('Awesome! Let\'s play a game I like to call `Name That Port` :)');
+      convo.say('Awesome! Let\'s play a game I like to call `Name That Port` :)\nSay `exit` at any time to quit.');
 
       let quiz = new Quiz();
-      convo.ask(quiz.question(), (response, convo) => {
-        if (quiz.check(response.text)) {
-          convo.say('You\'re *right*!');
-        } else {
-          convo.say('Sorry.. you got it *wrong*... The actual answer is `' + quiz.answer() + '`');
-        }
-        convo.next();
-      });
+      convo.ask(quiz.question(), quizHandler(quiz, convo));
+      convo.next();
     }
   });
+});
+
+controller.hears('show url', 'direct_message,direct_mention,mention', (bot, message) => {
+  const macOrWindows = ['darwin', 'win32'].filter(el => el == os.platform());
+  const urlMessage = process.env.NOW_URL
+                  ? `My URL is ${process.env.NOW_URL}`
+                  : macOrWindows.length > 0
+                    ? 'I think I am running locally, as I am on a Mac or Windows machine'
+                    : 'I do not seem to be deployed in the cloud using now.sh, but I am not running on Mac or Windows. Did you deploy me with Heroku or AWS?';
+  bot.reply(message, urlMessage);
 });

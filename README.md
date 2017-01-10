@@ -9,8 +9,8 @@ To install you'll need to:
 1. `git clone` this repository.
 2. `cp .env.example .env`
 3. Enter your bot token you got from Slack and enter it in the .env file
-4. Run `npm install`
-5. Finally, `npm start`
+4. Run `yarn` to install dependencies
+5. Finally, `npm start` or `npm run dev`. The difference is the dev script runs nodemon, so any changes to the `/src` dir will cause the app to reload automatically.
 
 ## Deploying
 We recommend deploying with [now](now.sh). Go to https://my.slack.com/services/new/bot and get a Bot API key. You can also name portnamer. Copy that to your clipboard. Then deploy with one command!
