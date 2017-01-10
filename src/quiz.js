@@ -27,7 +27,8 @@ class Quiz
   }
 
   check(answer) {
-    const regex = new RegExp('\\b' + answer.toLowerCase() + '\\b');
+    // strip special characters
+    const regex = new RegExp('\\b' + answer.toLowerCase().replace(/[^\w\s]/gi, '') + '\\b');
     return regex.test((this.answer()).toLowerCase());
   }
 }

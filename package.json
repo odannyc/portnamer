@@ -4,14 +4,17 @@
   "description": "Checks on common network ports such as 80 for HTTP or 22 for SSH.",
   "main": "src/portnamer.js",
   "scripts": {
-    "start": "nodemon src/portnamer.js",
+    "start": "forever src/portnamer.js",
     "dev": "DEBUG=true nodemon src/portnamer.js"
   },
   "author": "Danny Carrillo <odannycx@gmail.com>",
   "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  },
   "dependencies": {
     "botkit": "^0.4.7",
     "dotenv": "^2.0.0",
-    "nodemon": "^1.11.0"
+    "forever": "^0.15.3"
   }
 }
