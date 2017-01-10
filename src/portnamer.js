@@ -1,102 +1,92 @@
-var Botkit = require('botkit');
-var Ports = require('./ports');
-var Quiz = require('./quiz');
+const Botkit = require('botkit');
+const Ports = require('./ports');
+const Quiz = require('./quiz');
+const constants = require('./constants');
+require('dotenv').config({silent: true}); // load the .env file
 
-// load the .env file
-require('dotenv').config({silent: true});
+if (!process.env.SLACK_TOKEN) {
+  console.log('Error: Specify Slack Token in environment or .env');
+  process.exit(1);
+}
 
-var controller = Botkit.slackbot({
-    debug: process.env.DEBUG || false,
-});
-
-var bot = controller.spawn({
-    token: process.env.SLACK_TOKEN
+const debug = process.env.DEBUG == true ? process.env.DEBUG : false;
+const controller = Botkit.slackbot({ debug });
+const bot = controller.spawn({
+  token: process.env.SLACK_TOKEN
 }).startRTM();
 
 // Hello
-controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
-    bot.api.reactions.add({
-        timestamp: message.ts,
-        channel: message.channel,
-        name: 'robot_face',
-    }, function(err, res) {
-        if (err) {
-            bot.botkit.log('Failed to add emoji reaction :(', err);
-        }
-    });
+controller.hears(constants.greetings, 'direct_message,direct_mention,mention', function(bot, message) {
+  bot.api.reactions.add({
+    timestamp: message.ts,
+    channel: message.channel,
+    name: 'robot_face',
+  }, function(err, res) {
+    if (err) {
+      bot.botkit.log('Failed to add emoji reaction :(', err);
+    }
+  });
 
 
-    bot.reply(message, 'Hello. If you\'d like to know how to use me.. ;). Type `help`.');
+  bot.reply(message, 'Hello. If you\'d like to know how to use me.. ;). Type `help`.');
 });
 
 // Help
 controller.hears(['help'], 'direct_message,direct_mention,mention', function(bot, message) {
-    bot.reply(message, 'I am your fiendly port namer bot. You can ask me stuff like:\n```What port does telnet use?\nport 22?\nssh?\nGet me a random port\nLets play a game\nQuiz me```\nSo, what would you like to do ? :)');
+  bot.reply(message, constants.helpMessage);
 });
 
 // check by port
 controller.hears(['port (\\d+)', '^(\\d+)\\s*\\?*$'], 'direct_message,direct_mention,mention', function(bot, message) {
-    var port = message.match[1];
-    var name = Ports.find('name', port);
+  const port = message.match[1];
+  const name = Ports.find('port', port);
+  let reply = `*Sorry*, I don't have a record for anything on port ${'`' + port + '`'}`
 
-    if (name.length > 0) {
-        var reply = 'Looks like the port ' + port + ' belongs to ' + name[0].Description;
-    } else {
-        var reply = '*Sorry*, I couldn\'t find a name that matches port `' + port + '`';
-    }
+  if (name.length) {
+    reply = `Looks like port ${port} belongs to ${name[0].Description}`;
+  }
 
-    bot.reply(message, reply);
+  bot.reply(message, reply);
 });
 
 // check by name
 controller.hears(['port (?:does|is|has|have) (\\w+)', '^(\\w+)\\s*\\?*$'], 'direct_message,direct_mention,mention', function(bot, message) {
-    var name = (message.match[1]).toLowerCase();
-    var port = Ports.find('port', name);
+  const name = (message.match[1]).toLowerCase();
+  const port = Ports.find('name', name);
+  let reply = `*Sorry*, I don't have a record that matches ${'`' + name + '`'}`;
 
-    if (port.length > 0) {
-        var reply = name + ' uses port ' + port[0].Port;
-    } else {
-        var reply = '*Sorry*, I couldn\'t find a port that matches `' + name + '`';
-    }
+  if (port.length) {
+    reply = `${name} uses port ${port[0].Port}`;
+  }
 
-    bot.reply(message, reply);
+  bot.reply(message, reply);
 });
 
 // get a random port
 controller.hears(['random', 'fun fact'], 'direct_message,direct_mention,mention', function(bot, message) {
-    var randomPort = Ports.random();
+  const randomPort = Ports.random();
+  const protocols = [randomPort.TCP, randomPort.UDP].filter(el => el != '');
 
-    // Starts the reply string
-    var reply = `*${randomPort.Description}* is ${randomPort.Status} and uses port ${randomPort.Port} over `;
+  const reply = `*${randomPort.Description}* is stupid ${randomPort.Status} and uses port ${randomPort.Port} over ${protocols.join(' and ')}.`;
 
-    // Checks if the port uses both udp and tcp
-    if (randomPort.TCP != '' && randomPort.UDP != '') {
-        reply = reply + `${randomPort.TCP} and ${randomPort.UDP}.`;
-    } else if (randomPort.TCP != '') {
-        reply = reply + `${randomPort.TCP}.`;
-    } else if (randomPort.UDP != '') {
-        reply = reply + `${randomPort.UDP}.`;
-    }
-
-    bot.reply(message, reply);
+  bot.reply(message, reply);
 });
 
 // Quiz time
 controller.hears(['quiz me', 'game'], 'direct_message,direct_mention,mention', function(bot, message) {
-    bot.startConversation(message, function(err, convo) {
-        if (!err) {
-            convo.say('Awesome! Let\'s play a game I like to call `Name That Port` :)\nLet\'s start!');
+  bot.startConversation(message, function(err, convo) {
+    if (!err) {
+      convo.say('Awesome! Let\'s play a game I like to call `Name That Port` :)');
 
-            var quiz = new Quiz();
-            convo.ask(quiz.question(), function (response, convo) {
-                if (quiz.check(response.text)) {
-                    convo.say('You\'re *right*!');
-                } else {
-                    convo.say('Sorry.. you got it *wrong*.\nThe actual answer is `' + quiz.answer() + '`.\nGoodluck next time :)\nYou can play again by typing `quiz me`.');
-                }
-
-                convo.next();
-            });
+      let quiz = new Quiz();
+      convo.ask(quiz.question(), (response, convo) => {
+        if (quiz.check(response.text)) {
+          convo.say('You\'re *right*!');
+        } else {
+          convo.say('Sorry.. you got it *wrong*... The actual answer is `' + quiz.answer() + '`');
         }
-    });
+        convo.next();
+      });
+    }
+  });
 });
