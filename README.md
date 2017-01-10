@@ -1,7 +1,9 @@
 # portnamer
-A Slack bot that checks on common network ports such as 80 for HTTP or 22 for SSH.
+A bot that can tell you what service is on what port. Gamified!
 
 ## Installation
+Do you need to install this? Do you want to just add Port Namer to your Slack team or on Messenger? Coming soon!
+
 To install you'll need to:
 
 1. `git clone` this repository.
@@ -24,10 +26,8 @@ You can either mention `@portnamer` in a channel after you invite it, or DM it d
 
 ## TODO
 - [ ] Get random port intent - need to conversationalize it
-- [ ] Quiz intent - Add a way to keep questions coming
 - [ ] Use NLP service instead of Regex
 
-And there's more but too lazy to think about them? :/
 
 ## Contributions
 There's so many ways to make this better and I have little time to work on it. If you like it and might think of using it for fun or productivity, you should contribute!
