@@ -6,11 +6,11 @@ var Quiz = require('./quiz');
 require('dotenv').config({silent: true});
 
 var controller = Botkit.slackbot({
-    debug: false,
+    debug: process.env.DEBUG || false,
 });
 
 var bot = controller.spawn({
-    token: process.env.TOKEN
+    token: process.env.SLACK_TOKEN
 }).startRTM();
 
 // Hello

@@ -14,7 +14,7 @@ To install you'll need to:
 We recommend deploying with [now](now.sh). Go to https://my.slack.com/services/new/bot and get a Bot API key. You can also name portnamer. Copy that to your clipboard. Then deploy with one command!
 
 ```sh
-now -e TOKEN=[your slack token]
+now -e SLACK_TOKEN=[your slack token]
 ```
 
 This will give you a url. You now have a Slackbot living in the cloud!
