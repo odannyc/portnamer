@@ -399,6 +399,20 @@
         "Status": "Unofficial"
     },
     {
+        "Port": "91",
+        "TCP": "TCP",
+        "UDP": "",
+        "Description": "MIT Dover Spooler",
+        "Status": "Unofficial"
+    },
+    {
+        "Port": "92",
+        "TCP": "TCP",
+        "UDP": "UDP",
+        "Description": "Network Printing Protocol",
+        "Status": "Unofficial"
+    },
+    {
         "Port": "99",
         "TCP": "TCP",
         "UDP": "",
