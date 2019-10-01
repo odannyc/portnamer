@@ -413,6 +413,13 @@
         "Status": "Unofficial"
     },
     {
+        "Port": "95",
+        "TCP": "TCP",
+        "UDP": "UDP",
+        "Description": "SUPDUP, terminal-independent remote login",
+        "Status": "Official"
+    },
+    {
         "Port": "99",
         "TCP": "TCP",
         "UDP": "",
